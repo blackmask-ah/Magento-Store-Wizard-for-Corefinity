@@ -1,4 +1,4 @@
-# 🧙‍♂️ Corefinity Magento Store Wizard
+# 🧙‍♂️ Corefinity Magento Store Wizard  (BEST FOR DESKTOP)
 
 The **Corefinity Magento Store Wizard** is a sleek, no-code, step-by-step setup tool designed to streamline the Magento (and other platform) store configuration process. Built with HTML, CSS, and JavaScript, it provides a smooth and responsive UI to assist businesses in setting up a fully functional eCommerce store.
 
