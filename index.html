@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Magento Store Wizard</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .selected-theme {
+      border: 3px solid #06525f;
+      border-radius: 10px;
+      transform: scale(1.05);
+      transition: all 0.2s ease;
+    }
+    .theme-preview-img {
+      width: 100%;
+      max-width: 300px;
+      margin-top: 1rem;
+      border-radius: 8px;
+    }
+    .logo-img-sub {
+      height: 50px;
+      margin-right: 20px;
+    }
+    .platform-logos img.selected {
+      border: 2px solid #0d6efd;
+      border-radius: 10px;
+      transform: scale(1.05);
+    }
+    .theme-radio-group {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 1rem;
+    }
+    .theme-radio-group label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+    }
+    .theme-radio-img {
+      width: 120px;
+      border: 2px solid transparent;
+      border-radius: 10px;
+      transition: 0.2s ease;
+    }
+    .style-container {
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+      margin-top: 1rem;
+    }
+    .style-left {
+      flex: 1;
+    }
+    .style-preview {
+      flex: 1;
+      min-height: 300px;
+      border: 2px dashed #ccc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.2rem;
+      text-align: center;
+      padding: 1rem;
+    }
+    .colors label {
+      display: block;
+      margin: 0.5rem 0;
+    }
+    input[type="color"] {
+      margin-left: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Logo -->
+  <a href="#" class="logo-link">
+    <img src="logo.svg" alt="Corefinity Magento Wizardo Logo" class="logo-img" />
+  </a>
+
+  <!-- Welcome Box -->
+  <div id="welcome-box" class="welcome">
+    <div class="card-wrapper">
+      <div class="card-text">
+        <h2>Welcome to <span class="blue-text">Corefinity</span> Wizard</h2>
+        <p style="color: #06525f;">
+          The <b>Magento Store Wizard</b> is a sleek, guided tool that simplifies Magento store setup with step-by-step precision.
+        </p>
+      </div>
+      <div class="card">
+        <h2>Get Started</h2>
+        <p>Enter your company name</p>
+        <input type="text" id="companyName" placeholder="Company Name" />
+        <button id="start-btn" onclick="startWizard()">Start</button>
+      </div>
+      <!-- <div class="why-btn">
+        <button onclick="window.location.href='https://www.corefinity.com/why'">WHY COREFINITY</button>
+      </div> -->
+      <div class="platform-section">
+        <h1>Supported Platforms:</h1>
+        <div class="Sub-logo-row">
+          <img src="magento_logo.png" alt="magento" class="logo-img-sub" />
+          <img src="laravel_logo.avif" alt="laravel" class="logo-img-sub" />
+          <img src="wordpress_logo.jpg" alt="wordpress" class="logo-img-sub" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wizard Container -->
+  <div id="wizardContainer" class="wizard hidden">
+    <!-- Sidebar -->
+<nav class="sidebar">
+  <ul>
+    <li id="nav-intro" class="active">1. Store Info</li>
+    <li id="nav-platform">2. Platform</li>
+    <li id="nav-style">3. Style</li>
+    <li id="nav-modules">4. Plugin Settings</li>
+    <li id="nav-summary">5. Summary</li>
+    <li id="nav-finish">6. Done</li>
+    <li id="nav-profile" onclick="showProfile()">     👤 Profile</li>
+    <li id="nav-mysites" onclick="showMySites()">       🌐 My Sites</li>
+    <li id="nav-logout" onclick="showLogout()">     🚪 Logout</li>
+
+  </ul>
+</nav>
+
+
+    <main class="content">
+      <div class="progress-bar">
+        <span id="progress">Step 1 of 6</span>
+        <div class="progress-line"><div id="progress-fill"></div></div>
+      </div>
+
+      <!-- Step 1: Store Info -->
+      <section id="step-intro" class="step">
+        <h2>Let's Build Your Fresh Magento Website</h2>
+        <p>Corefinity Magento Wizard is a no-code solution for building and deploying a fully functional Magento store. 
+          Simply input some basic information throughout the guided steps to configure your store. 
+          Including our approved third-parties ensuring your site it tailored to you and your Magento Store</p>
+        <input type="text" id="storeName" placeholder="Store Name" />
+        <div class="btn-wrapper">
+          <button onclick="nextStep()">Next Step</button>
+        </div>
+      </section>
+
+      <!-- Step 2: Platform -->
+      <section id="step-platform" class="step hidden">
+        <h2>Environment Setup</h2>
+        <p>Select your Platform</p>
+        <div class="platform-logos">
+          <img class="select-logo" src="magento_logo.png" alt="magento" onclick="selectPlatform('magento')" />
+          <img class="select-logo" src="laravel_logo.avif" alt="laravel" onclick="selectPlatform('laravel')" />
+          <img class="select-logo" src="wordpress_logo.jpg" alt="wordpress" onclick="selectPlatform('wordpress')" />
+        </div>
+        <div id="version-select" class="hidden">
+          <select id="platformVersion" onchange="loadDependencies()"></select>
+          <div id="dependencies"></div>
+        </div>
+        <div class="platform-btn-wrapper">
+          <button onclick="prevStep()">Back</button>
+          <button onclick="nextStep()">Next Step</button>
+        </div>
+      </section>
+
+      <!-- Step 3: Style -->
+      <section id="step-style" class="step hidden">
+        <h2>Style Configuration</h2>
+        <p>Select a best theme</p>
+        <div class="style-container">
+          <div class="style-left">
+            <div class="theme-radio-group">
+              <label>
+                <input type="radio" name="theme" value="Luma" hidden />
+                <img id="luma-img" src="luma.png" alt="Luma" class="theme-radio-img" onclick="selectTheme('Luma')" />
+                <div class="theme-label">Luma</div>
+              </label>
+              <label>
+                <input type="radio" name="theme" value="Hyvä" hidden />
+                <img id="hyva-img" src="hyva.png" alt="Hyvä" class="theme-radio-img" onclick="selectTheme('Hyvä')" />
+                <div class="theme-label">Hyvä</div>
+              </label>
+            </div>
+
+            <div class="colors">
+              <label>Primary: <input type="color" id="primaryColor" /></label>
+              <label>Secondary: <input type="color" id="secondaryColor" /></label>
+              <label>Tertiary: <input type="color" id="tertiaryColor" /></label>
+            </div>
+
+            <div>
+              <input type="file" id="logoUpload" accept="image/*" onchange="previewLogo()" />
+              <div id="logoPreview">[Logo]</div>
+            </div>
+
+            <div>
+              <label for="fontInput">Font:</label>
+              <select id="fontInput">
+                <option value="Inter">Inter</option>
+                <option value="Roboto">Roboto</option>
+                <option value="Poppins">Poppins</option>
+                <option value="Lato">Lato</option>
+              </select>
+              <label><input type="checkbox" id="defaultFont" /> Use Default Font</label>
+            </div>
+          </div>
+
+          <div class="style-preview" id="themeImage">[Theme preview]</div>
+        </div>
+        <div class="theme-btn-wrapper">
+          <button onclick="prevStep()">Back</button>
+          <button onclick="nextStep()">Next Step</button>
+        </div>
+      </section>
+
+      <!-- Step 4: Modules -->
+     <!-- Step 4: Modules -->
+<section id="step-modules" class="step hidden">
+  <h2>Select Plugins</h2>
+
+  <!-- Selected Plugin Status -->
+  <div id="plugin-status" style="margin-bottom: 1rem; font-weight: bold;">
+    Selected Plugins: <span id="infoPluginsUsed">None</span>
+  </div>
+
+  <!-- Payments -->
+  <h3>Payments</h3>
+  <p>Integrate secure and reliable payment gateways into your store.</p>
+  <div class="plugin-row">
+    <div class="plugin-info">
+      <img src="ppcp.jpg" alt="PPCP" class="logo-img-sub" />
+      <span>PPCP</span>
+    </div>
+    <div class="plugin-buttons">
+      <button>Add</button>
+      <button>Cancel</button>
+    </div>
+  </div>
+  <div class="plugin-row">
+    <div class="plugin-info">
+      <img src="fes.jpg" alt="Festaine" class="logo-img-sub" />
+      <span>Festaine</span>
+    </div>
+    <div class="plugin-buttons">
+      <button>Add</button>
+      <button>Cancel</button>
+    </div>
+  </div>
+  <div class="plugin-row">
+    <div class="plugin-info">
+      <img src="mollie.png" alt="Mollie" class="logo-img-sub" />
+      <span>Mollie</span>
+    </div>
+    <div class="plugin-buttons">
+      <button>Add</button>
+      <button>Cancel</button>
+    </div>
+  </div>
+  <div class="plugin-row">
+    <div class="plugin-info">
+      <img src="strip.png" alt="Stripe" class="logo-img-sub" />
+      <span>Stripe</span>
+    </div>
+    <div class="plugin-buttons">
+      <button>Add</button>
+      <button>Cancel</button>
+    </div>
+  </div>
+
+  <!-- Address Finder -->
+  <h3>Address Finder</h3>
+  <p>Improve checkout experience by auto-filling accurate addresses.</p>
+  <div class="plugin-row">
+    <div class="plugin-info">
+      <img src="logate.jpg" alt="Loqate" class="logo-img-sub" />
+      <span>Loqate</span>
+    </div>
+    <div class="plugin-buttons">
+      <button>Add</button>
+      <button>Cancel</button>
+    </div>
+  </div>
+  <div class="plugin-row">
+    <div class="plugin-info">
+      <img src="smarty.png" alt="SmartyStreets" class="logo-img-sub" />
+      <span>SmartyStreets</span>
+    </div>
+    <div class="plugin-buttons">
+      <button>Add</button>
+      <button>Cancel</button>
+    </div>
+  </div>
+
+  <!-- Email & SMS -->
+  <h3>Email & SMS</h3>
+  <p>Send targeted messages and marketing campaigns to customers.</p>
+  <div class="plugin-row">
+    <div class="plugin-info">
+      <img src="klav.jpg" alt="Klaviyo" class="logo-img-sub" />
+      <span>Klaviyo</span>
+    </div>
+    <div class="plugin-buttons">
+      <button>Add</button>
+      <button>Cancel</button>
+    </div>
+  </div>
+  <div class="plugin-row">
+    <div class="plugin-info">
+      <img src="do.webp" alt="DotDigital" class="logo-img-sub" />
+      <span>DotDigital</span>
+    </div>
+    <div class="plugin-buttons">
+      <button>Add</button>
+      <button>Cancel</button>
+    </div>
+  </div>
+  <div class="plugin-row">
+    <div class="plugin-info">
+      <img src="mail.png" alt="Mailchimp" class="logo-img-sub" />
+      <span>Mailchimp</span>
+    </div>
+    <div class="plugin-buttons">
+      <button>Add</button>
+      <button>Cancel</button>
+    </div>
+  </div>
+
+  <!-- Tax & Shipping -->
+  <h3>Tax & Shipping</h3>
+  <p>Automatically calculate tax rates and provide accurate shipping rates.</p>
+  <div class="plugin-row">
+    <div class="plugin-info">
+      <img src="shping.png" alt="ShipperHQ" class="logo-img-sub" />
+      <span>ShipperHQ</span>
+    </div>
+    <div class="plugin-buttons">
+      <button>Add</button>
+      <button>Cancel</button>
+    </div>
+  </div>
+  <div class="plugin-row">
+    <div class="plugin-info">
+      <img src="alva.jpg" alt="Avalara" class="logo-img-sub" />
+      <span>Avalara</span>
+    </div>
+    <div class="plugin-buttons">
+      <button>Add</button>
+      <button>Cancel</button>
+    </div>
+  </div>
+
+  <!-- Review & UGC -->
+  <h3>Review & UGC</h3>
+  <p>Boost trust and engagement through customer-generated content and reviews.</p>
+  <div class="plugin-row">
+    <div class="plugin-info">
+      <img src="yot.jpg" alt="Yotpo Reviews" class="logo-img-sub" />
+      <span>Yotpo Reviews</span>
+    </div>
+    <div class="plugin-buttons">
+      <button>Add</button>
+      <button>Cancel</button>
+    </div>
+  </div>
+  <div class="plugin-row">
+    <div class="plugin-info">
+      <img src="review.jpg" alt="Reviews.io" class="logo-img-sub" />
+      <span>Reviews.io</span>
+    </div>
+    <div class="plugin-buttons">
+      <button>Add</button>
+      <button>Cancel</button>
+    </div>
+  </div>
+
+  <!-- Search, Merchandising & Recommendations -->
+  <h3>Search, Merchandising & Recommendations</h3>
+  <p>Personalize shopping experiences with smart search and recommendations.</p>
+  <div class="plugin-row">
+    <div class="plugin-info">
+      <img src="kle.png" alt="Klevu" class="logo-img-sub" />
+      <span>Klevu</span>
+    </div>
+    <div class="plugin-buttons">
+      <button>Add</button>
+      <button>Cancel</button>
+    </div>
+  </div>
+  <div class="plugin-row">
+    <div class="plugin-info">
+      <img src="notso.jpg" alt="Nosto" class="logo-img-sub" />
+      <span>Nosto</span>
+    </div>
+    <div class="plugin-buttons">
+      <button>Add</button>
+      <button>Cancel</button>
+    </div>
+  </div>
+
+  <!-- Navigation Buttons -->
+  <div class="bottom-right-btns">
+    <button onclick="prevStep()">Back</button>
+    <button onclick="nextStep()">Next Step</button>
+  </div>
+</section>
+
+
+      <!-- Step 5: Summary -->
+ <section id="step-summary" class="summary-section step hidden">
+  <h2 class="summary-title">Summary</h2>
+
+  <div id="summaryContent" class="summary-box"></div>
+
+  <div class="summary-buttons">
+    <button class="summary-btn back-btn" onclick="prevStep()">
+      <i class="fas fa-arrow-left"></i> Back
+    </button>
+    <button class="summary-btn deploy-btn" onclick="submitForm()">
+      <i class="fas fa-rocket"></i> Build & Deploy
+    </button>
+  </div>
+ </section>
+       <!-- Step 6: Done -->
+      <section id="step-finish" class="step hidden">
+        <h2>Done</h2>
+        <p>✔ Your configuration has been submitted successfully.</p>
+      </section>
+    </main>
+<!-- 🔽 Add this inside <main class="content"> AFTER step-summary and BEFORE step-finish -->
+<section id="step-mysites" class="step hidden">
+  <h2>My Sites</h2>
+  <div class="site-table">
+  <div class="site-row site-header">
+    <span>Store</span>
+    <span>Version</span>
+    <span>User</span>
+    <span>Email</span>
+    <span>Created</span>
+  </div>
+  <!-- New rows get appended here -->
+</div>
+
+  <div class="bottom-right-btns">
+  <button onclick="hideMySites()">Back to Wizard</button>
+
+  </div>
+</section>
+
+<!-- Profile -->
+<section id="step-profile" class="step hidden">
+  <h2>Edit Profile</h2>
+  <div class="profile-box">
+    <label for="profileInputName"><strong>Username:</strong></label>
+    <input type="text" id="profileInputName" placeholder="Enter your name" />
+
+    <label for="profileInputEmail"><strong>Email:</strong></label>
+    <input type="email" id="profileInputEmail" placeholder="Enter your email" />
+
+    <button id="save-btn" onclick="saveProfile()">Save Profile</button>
+  </div>
+ 
+</section>
+<section id="step-logout" class="step hidden">
+  <h2>Logout</h2>
+  <p>Are you sure you want to log out?</p>
+  <div class="bottom-right-btns">
+    <button onclick="cancelLogout()">Cancel</button>
+    <button onclick="confirmLogout()">Confirm Logout</button>
+  </div>
+</section>
+
+
+    <!-- Right Sidebar -->
+    <aside class="info-panel">
+      <h3>Store Info</h3>
+      <div>Company: <span id="infoCompanyName">-</span></div>
+      <div>Store: <span id="infoStoreName">-</span></div>
+      <div>Platform: <span id="infoPlatformName">-</span></div>
+      <div>Version: <span id="infoVersionNumber">-</span></div>
+      <div>Font: <span id="infoFontUsed">-</span></div>
+      <div>Theme: <span id="infoThemeUsed">-</span></div>
+      <div>Plugins: <span id="infoPluginsUsed">-</span></div>
+      
+    </aside>
+  </div>
+
+  <!-- Main JavaScript -->
+  <script src="main.js"></script>
+</body>
+</html>
